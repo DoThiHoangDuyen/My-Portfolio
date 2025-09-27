@@ -1,0 +1,250 @@
+@import "tailwindcss";
+
+@theme {
+  /*  
+    HSL là tên viết tắt của Hue - Saturation - Lightness
+    - Là mô hình màu sắc dựa trên cách con người cảm nhận màu sắc
+    - Hue (màu sắc/tông màu): đại diện cho màu cơ bản (0-360 độ)
+    - Saturation (độ bão hòa): đại diện cho độ tinh khiết của màu (0%: xám(mất màu) - 100%: màu rực rỡ, thuần khiết)
+    - Lightness (độ sáng): đại diện cho độ sáng của màu (0%: đen hoàn toàn - 50%: màu gốc - 100%: trắng hoàn toàn)
+    */
+  /*  
+    - hsl(...): là hàm CSS để định nghĩa màu sắc sử dụng mô hình HSL
+    - hsla(...): tương tự hsl(...) nhưng có thêm kênh alpha để điều 
+      chỉnh độ trong suốt (0: hoàn toàn trong suốt - 1: hoàn toàn không trong suốt)
+    */
+  /*  
+    - hsl(var(--border)): sử dụng biến CSS --border để xác định giá trị HSL cho màu viền
+    - Ta có thể thay đổi giá trị của biến --border ở một nơi khác trong CSS để thay đổi màu viền trên toàn bộ ứng dụng
+    - Sử dụng cách này thay vì gán trực tiếp giá trị màu sắc giúp:
+      + Dễ dàng thay đổi giao diện (theme) của ứng dụng
+      + Giúp duy trì tính nhất quán trong việc sử dụng màu sắc
+      + Giúp tái sử dụng các giá trị màu sắc ở nhiều nơi khác nhau trong CSS
+    */
+  --color-border: hsl(var(--border));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-card: hsl(var(--card));
+
+  /* 
+    - Các % chính là các mốc thời gian của animation:
+    - 0%: trạng thái ban đầu của phần tử(lúc bắt đầu animation)
+    - 50%: trạng thái giữa của phần tử(giữa quá trình animation)
+    - 100%: trạng thái cuối cùng của phần tử(khi kết thúc animation)
+    - from: tương đương với 0%
+    - to: tương đương với 100%
+    - Tại mỗi mốc thời gian, ta có thể định nghĩa
+     các thuộc tính CSS khác nhau để tạo hiệu ứng chuyển động
+  */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  /* 
+    - Hiệu ứng nhấp nháy nhẹ: thay đổi độ mờ (opacity) của phần tử
+    - 0% và 100%: phần tử hoàn toàn rõ ràng (opacity: 1)
+    - 50%: phần tử hơi mờ (opacity: 0.8)
+    - Tạo cảm giác nhẹ nhàng, không quá chói mắt
+  */
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes meteor {
+    0% {
+      transform: rotate(215deg) translate(0, 0);
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      transform: rotate(215deg) translate(-800px, 100px);
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  /* 
+    - Thiết lập các biến CSS cho màu sắc chính của giao diện
+    - Các giá trị HSL này có thể được điều chỉnh để thay đổi toàn bộ giao diện của ứng dụng
+    - Ví dụ: thay đổi giá trị của --primary sẽ ảnh hưởng đến tất cả các thành phần sử dụng màu primary
+  */
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 100%;
+
+    --primary: 250 47% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+  }
+
+  .dark {
+    --background: 222 47% 4%;
+    --foreground: 213 31% 91%;
+
+    --card: 222 47% 8%;
+
+    --primary: 250 65% 65%;
+    --primary-foreground: 213 31% 91%;
+
+    --border: 217 33% 20%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Đảm bảo text trong card có màu tối để dễ đọc trong light mode */
+  :root .card, :root [class*="card"], :root .bg-card {
+    color: hsl(222 47% 11%);
+  }
+
+  /* Đảm bảo card có nền trắng trong light mode */
+  :root .card, :root [class*="card"], :root .bg-card {
+    background-color: hsl(0 0% 100%);
+  }
+
+  /* Đảm bảo card có nền tối và text sáng trong dark mode */
+  .dark .card, .dark [class*="card"], .dark .bg-card {
+    background-color: hsl(222 47% 8%);
+    color: hsl(213 31% 91%);
+  }
+}
+
+/* Các biến animation:
+    - float: hiệu ứng nổi lên và hạ xuống nhẹ nhàng
+    - pulse-subtle: hiệu ứng nhấp nháy nhẹ
+    - fade-in: hiệu ứng mờ dần xuất hiện
+    - meteor: hiệu ứng sao băng di chuyển nhanh
+    - Shorthand property: cú pháp rút gọn để định nghĩa các thuộc tính CSS liên quan đến animation
+      + Cú pháp: animation: [tên-animation] [thời-gian] [hàm-tốc-độ] [độ trễ] [số-lần-lặp] [hướng lặp] [trạng-thái-kết-thúc];
+      + Ví dụ: --anime-float: float 6s ease-in-out infinite;
+        * float: tên của animation
+        * 6s: thời gian thực hiện một chu kỳ của animation là 6 giây
+        * ease-in-out: hàm tốc độ, bắt đầu chậm, tăng tốc ở giữa và kết thúc chậm
+        * infinite: lặp lại vô hạn
+  */
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.7s ease-out forwards;
+  }
+  .animate-fade-in-delay-1 {
+    animation: fade-in 0.7s ease-out 0.2s forwards;
+  }
+  .animate-fade-in-delay-2 {
+    animation: fade-in 0.7s ease-out 0.4s forwards;
+  }
+  .animate-fade-in-delay-3 {
+    animation: fade-in 0.7s ease-out 0.6s forwards;
+  }
+  .animate-fade-in-delay-4 {
+    animation: fade-in 0.7s ease-out 0.8s forwards;
+  }
+}
+
+/* 
+  - Utility: các lớp tiện ích để áp dụng nhanh các kiểu CSS phổ biến
+  - Cho phép định nghĩa custom utilities để sử dụng lại trong toàn bộ ứng dụng
+  - Thêm các class tùy biến thay vì viết CSS trực tiếp nhiều lần
+ */
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+
+  @media (width >= 640px) {
+    max-width: 640px;
+  }
+  @media (width >= 768px) {
+    max-width: 768px;
+  }
+  @media (width >= 1024px) {
+    max-width: 1024px;
+  }
+  @media (width >= 1280px) {
+    max-width: 1280px;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+@utility text-glow {
+  @apply relative;
+  text-shadow: 0 0 10px rgba(167, 139, 255, 0.5);
+}
+
+@utility card-hover {
+  @apply transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg;
+}
+
+@utility gradient-border {
+  @apply relative rounded-md;
+  background: linear-gradient(to right, hsl(var(--card)), hsl(var(--card)));
+  background-clip: padding-box;
+  border: 1px solid transparent;
+}
+
+@utility cosmic-button {
+  @apply px-6 py-2 rounded-full bg-primary text-primary-foreground font-medium
+  transition-all duration-300 hover:shadow-[0_0_10px_rgba(139,92,246,0.5)]
+  hover:scale-105 active:scale-95;
+}
+
+@utility star {
+  @apply absolute rounded-full bg-white;
+  box-shadow: 0 0 10px 2px rbga(255, 255, 255, 0.4);
+}
+
+@utility meteor {
+  @apply absolute bg-linear-to-r from-white via-white to-transparent rounded-full;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.3);
+}
+
+.animate-meteor {
+  animation: meteor 3s linear infinite;
+}
+
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
